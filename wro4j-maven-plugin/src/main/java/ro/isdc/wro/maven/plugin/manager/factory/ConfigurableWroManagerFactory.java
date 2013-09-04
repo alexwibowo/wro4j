@@ -9,6 +9,10 @@ import java.io.IOException;
 import java.util.Properties;
 
 import ro.isdc.wro.WroRuntimeException;
+import ro.isdc.wro.config.Context;
+import ro.isdc.wro.config.factory.WroConfigurationPropertyLoader;
+import ro.isdc.wro.config.jmx.ConfigConstants;
+import ro.isdc.wro.config.jmx.WroConfiguration;
 import ro.isdc.wro.extensions.model.factory.SmartWroModelFactory;
 import ro.isdc.wro.manager.factory.standalone.ConfigurableStandaloneContextAwareManagerFactory;
 import ro.isdc.wro.manager.factory.standalone.StandaloneContext;
@@ -40,7 +44,8 @@ public class ConfigurableWroManagerFactory
   @Override
   public void initialize(final StandaloneContext standaloneContext) {
     super.initialize(standaloneContext);
-    this.standaloneContext = standaloneContext;
+      WroConfigurationPropertyLoader.loadWroConfigurationFromProperties(Context.get().getConfig(), createProperties());
+      this.standaloneContext = standaloneContext;
   }
 
   /**

@@ -46,57 +46,8 @@ public class PropertyWroConfigurationFactory
    */
   public WroConfiguration create() {
     final WroConfiguration config = new WroConfiguration();
-    config.setDebug(valueAsBoolean(properties.get(ConfigConstants.debug.name()), true));
-    config.setGzipEnabled(valueAsBoolean(properties.get(ConfigConstants.gzipResources.name()), true));
-    config.setJmxEnabled(valueAsBoolean(properties.get(ConfigConstants.jmxEnabled.name()), true));
-    config.setCacheUpdatePeriod(valueAsLong(properties.get(ConfigConstants.cacheUpdatePeriod.name()), 0));
-    config.setModelUpdatePeriod(valueAsLong(properties.get(ConfigConstants.modelUpdatePeriod.name()), 0));
-    config.setResourceWatcherUpdatePeriod(valueAsLong(
-        properties.get(ConfigConstants.resourceWatcherUpdatePeriod.name()), 0));
-    config.setDisableCache(valueAsBoolean(properties.get(ConfigConstants.disableCache.name()), false));
-    config.setIgnoreMissingResources(valueAsBoolean(properties.get(ConfigConstants.ignoreMissingResources.name()), true));
-    config.setIgnoreEmptyGroup(valueAsBoolean(properties.get(ConfigConstants.ignoreEmptyGroup.name()), true));
-    config.setIgnoreFailingProcessor(valueAsBoolean(properties.get(ConfigConstants.ignoreFailingProcessor.name()), false));
-    config.setEncoding(valueAsString(properties.get(ConfigConstants.encoding.name()), WroConfiguration.DEFAULT_ENCODING));
-    config.setWroManagerClassName(valueAsString(properties.get(ConfigConstants.managerFactoryClassName.name())));
-    config.setMbeanName(valueAsString(properties.get(ConfigConstants.mbeanName.name())));
-    config.setHeader(valueAsString(properties.get(ConfigConstants.header.name())));
-    config.setCacheGzippedContent(valueAsBoolean(properties.get(ConfigConstants.cacheGzippedContent.name()), false));
-    config.setParallelPreprocessing(valueAsBoolean(properties.get(ConfigConstants.parallelPreprocessing.name()), false));
-    config.setConnectionTimeout((int) valueAsLong(properties.get(ConfigConstants.connectionTimeout.name()),
-        WroConfiguration.DEFAULT_CONNECTION_TIMEOUT));
+    WroConfigurationPropertyLoader.loadWroConfigurationFromProperties(config, properties);
     LOG.debug("WroConfiguration created: {}", config);
     return config;
-  }
-  
-  private long valueAsLong(final Object object, final long defaultValue) {
-    if (object == null) {
-      return defaultValue;
-    }
-    try {
-      return Long.valueOf(valueAsString(object));
-    } catch (final NumberFormatException e) {
-      final String message = "Invalid long value: " + object + ". Using defaultValue: " + defaultValue;
-      LOG.error(message);
-      throw new WroRuntimeException(message);
-    }
-  }
-  
-  private boolean valueAsBoolean(final Object object, final boolean defaultValue) {
-    return BooleanUtils.toBooleanDefaultIfNull(BooleanUtils.toBooleanObject(valueAsString(object)), defaultValue);
-  }
-  
-  /**
-   * Helps to avoid "null" as string situation.
-   */
-  private String valueAsString(final Object object) {
-    return valueAsString(object, null);
-  }
-  
-  /**
-   * @return string representation of an object. If the object is null the defaultValue will be returned.
-   */
-  private String valueAsString(final Object object, final String defaultValue) {
-    return object != null ? String.valueOf(object) : defaultValue;
   }
 }
